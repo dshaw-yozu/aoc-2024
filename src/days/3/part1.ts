@@ -3,10 +3,7 @@ export function parseInput(rawText: string) {
 
   const matches = rawText.match(mulRegex);
 
-  if (matches) {
-    return matches;
-  }
-  return [];
+  return matches ?? [];
 }
 
 export function handleMul(mulOperation: string) {
