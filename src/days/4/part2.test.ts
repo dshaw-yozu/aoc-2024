@@ -1,24 +1,6 @@
-import { checkDiagonalCross, checkVerticalCross, findMASes } from "./part2";
+import { checkDiagonalCross, findMASes } from "./part2";
 
 describe("part 2", () => {
-  // .M. .S. .M. .S.
-  // MAS MAS SAM SAM
-  // .S. .M. .S. .M.
-  describe("checkVerticalCross", () => {
-    it("should return true for valid vertical MAS cross", () => {
-      expect(checkVerticalCross([".M.", "MAS", ".S."], 1, 1)).toBe(true);
-      expect(checkVerticalCross([".S.", "MAS", ".M."], 1, 1)).toBe(true);
-
-      expect(checkVerticalCross([".S.", "SAM", ".M."], 1, 1)).toBe(true);
-      expect(checkVerticalCross([".M.", "SAM", ".S."], 1, 1)).toBe(true);
-    });
-    it("should return false for invalid vertical MAS cross", () => {
-      expect(checkVerticalCross([".M.", "MAS", ".M."], 1, 1)).toBe(false);
-      expect(checkVerticalCross([".S.", "AAA", ".M."], 1, 1)).toBe(false);
-      expect(checkVerticalCross([".S.", "AAA", ".S."], 1, 1)).toBe(false);
-    });
-  });
-
   // M.M  S.M  S.S  M.S
   // .A.  .A.  .A.  .A.
   // S.S  S.M  M.M  M.S
@@ -53,18 +35,6 @@ describe("part 2", () => {
           "..........",
         ])
       ).toBe(9);
-    });
-
-    it("should return 2 for overlayed crosses", () => {
-      expect(findMASes(["MMM", "MAS", "SSS"])).toBe(2);
-      expect(findMASes(["MSM", "MAS", "SMS"])).toBe(2);
-      expect(findMASes(["MMS", "MAS", "MSS"])).toBe(2);
-      expect(findMASes(["MSS", "MAS", "MMS"])).toBe(2);
-      expect(findMASes(["SSM", "MAS", "SMM"])).toBe(2);
-    });
-
-    it("should return 2 for overlayed crosses", () => {
-      expect(findMASes(["MSM", "MAS", "SMS"])).toBe(2);
     });
   });
 });
