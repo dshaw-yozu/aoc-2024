@@ -8,6 +8,14 @@ export type ParsedInput = {
   pagesList: PagesList;
 };
 
+export function createPageMap(pageList: number[]): PageMap {
+  const pageMap: PageMap = new Map();
+  pageList.forEach((page, index) => {
+    pageMap.set(page, index);
+  });
+  return pageMap;
+}
+
 export function parseInput(rawText: string): ParsedInput {
   const [rulesRaw, pagesRaw] = rawText.split("\n\n");
 
@@ -21,11 +29,7 @@ export function parseInput(rawText: string): ParsedInput {
   );
 
   const pageMaps = pageInputs.map((_, index) => {
-    const pageMap: PageMap = new Map();
-    pagesList[index].forEach((page, index) => {
-      pageMap.set(page, index);
-    });
-    return pageMap;
+    return createPageMap(pagesList[index]);
   });
 
   return { pageMaps, rules, pagesList };

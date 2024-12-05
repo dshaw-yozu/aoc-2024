@@ -7,7 +7,7 @@ import {
   solution,
 } from "./part1";
 
-const parsedRules: Rule[] = [
+export const parsedRules: Rule[] = [
   [47, 53],
   [97, 13],
   [97, 61],
