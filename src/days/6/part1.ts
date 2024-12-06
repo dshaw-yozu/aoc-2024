@@ -23,7 +23,7 @@ export function parseInput(rawText: string): [GuardMap, GuardLocation] {
       // can't use [x,y] here as [1,2]!==[1,2]
       map.set(`${x}|${y}`, char);
 
-      if (char === "^") {
+      if (rotations.includes(char as ROTATION)) {
         guardLocation = [x, y];
       }
     });
@@ -40,7 +40,7 @@ export function rotateGuard(currentRotation: ROTATION): ROTATION {
 export function moveGuard(
   map: GuardMap,
   location: GuardLocation
-): { isLeaving: boolean; location: GuardLocation } {
+): { isLeaving: boolean; location: GuardLocation; justRotated: boolean } {
   let isLeaving = false;
   const originalLocation = `${location[0]}|${location[1]}`;
   let [guardX, guardY] = [...location];
@@ -93,7 +93,11 @@ export function moveGuard(
       break;
   }
 
-  return { isLeaving: isLeaving, location: [guardX, guardY] };
+  return {
+    isLeaving: isLeaving,
+    location: [guardX, guardY],
+    justRotated: newFacingContent === "#",
+  };
 }
 
 export function solution(map: GuardMap, location: GuardLocation): number {
