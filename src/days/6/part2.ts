@@ -14,7 +14,7 @@ import {
 //    check [x + d, y + d] rotated 1
 //    check [x, y + d] rotated 2
 
-export function getFacingContent(
+export function getFacingLocation(
   map: GuardMap,
   location: GuardLocation,
   overRideFacing?: ROTATION
@@ -37,7 +37,7 @@ export function getFacingContent(
       guardFacingX -= 1;
       break;
   }
-  return map.get(`${guardFacingX}|${guardFacingY}`);
+  return `${guardFacingX}|${guardFacingY}`;
 }
 
 export function findLoops(map: GuardMap, location: GuardLocation): number {
@@ -92,7 +92,7 @@ export function findLoops(map: GuardMap, location: GuardLocation): number {
     let facing = guardFacing;
 
     const validCorners = loopCorners.filter((l) => {
-      const content = getFacingContent(map, l, facing);
+      const content = map.get(getFacingLocation(map, l, facing));
       facing = rotateGuard(facing);
 
       return content === "#";
@@ -107,6 +107,14 @@ export function findLoops(map: GuardMap, location: GuardLocation): number {
   console.log(potentialLoops);
 
   return potentialLoops;
+}
+
+export function tryObsticalInFront(
+  map: GuardMap,
+  location: GuardLocation
+): boolean {
+  // TODO
+  return false;
 }
 
 export function solution(map: GuardMap, location: GuardLocation): number {
