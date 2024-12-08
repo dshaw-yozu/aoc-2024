@@ -49,6 +49,7 @@ describe("part 1", () => {
       expect(moveGuard(map, [0, 1])).toStrictEqual({
         isLeaving: true,
         location: [0, 0],
+        justRotated: false,
       });
 
       expect(map.get("0|1")).toBe("X");
@@ -63,6 +64,7 @@ describe("part 1", () => {
       expect(moveGuard(map, [0, 2])).toStrictEqual({
         isLeaving: false,
         location: [0, 1],
+        justRotated: true,
       });
       expect(map.get("0|0")).toBe("#");
       expect(map.get("0|1")).toBe(">");
@@ -74,6 +76,7 @@ describe("part 1", () => {
       expect(moveGuard(map, [0, 0])).toStrictEqual({
         isLeaving: true,
         location: [1, 0],
+        justRotated: false,
       });
 
       expect(map.get("0|0")).toBe("X");
@@ -85,6 +88,7 @@ describe("part 1", () => {
       expect(moveGuard(map, [0, 0])).toStrictEqual({
         isLeaving: true,
         location: [0, 1],
+        justRotated: false,
       });
 
       expect(map.get("0|0")).toBe("X");
@@ -96,6 +100,7 @@ describe("part 1", () => {
       expect(moveGuard(map, [1, 0])).toStrictEqual({
         isLeaving: true,
         location: [0, 0],
+        justRotated: false,
       });
 
       expect(map.get("0|0")).toBe("<");
