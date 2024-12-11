@@ -39,6 +39,10 @@ export function findAccessibleNines(
   height: number,
   width: number
 ) {
+  // starting from 8 work way down trail adding to a set the coords of
+  // 9 accessible to that grid ref
+  // when it reaches the 0 it will have a set of accessible 9s
+
   for (let n = 8; n >= 0; n--) {
     for (let x = 0; x < width; x++) {
       for (let y = 0; y < height; y++) {
