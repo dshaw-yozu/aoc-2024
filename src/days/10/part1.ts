@@ -1,6 +1,6 @@
 type LocationInfo = {
   height: number;
-  accessibleNines: number;
+  accessibleNines: Set<string>;
 };
 type TrailMap = Map<string, LocationInfo>;
 
@@ -15,9 +15,14 @@ export function parseInput(rawText: string): {
   lines.forEach((line, y) => {
     line.split("").forEach((char, x) => {
       // can't use [x,y] here as [1,2]!==[1,2]
+      const accessibleNines = new Set<string>();
+
+      if (char === "9") {
+        accessibleNines.add(coordToString(x, y));
+      }
       map.set(coordToString(x, y), {
         height: parseInt(char),
-        accessibleNines: char === "9" ? 1 : 0,
+        accessibleNines,
       });
     });
   });
@@ -42,7 +47,7 @@ export function findAccessibleNines(
         const left = [x - 1, y];
         const right = [x + 1, y];
 
-        let accessibleNines = 0;
+        let accessibleNines: Set<string> = new Set();
 
         const current = map.get(coordToString(x, y))!;
 
@@ -53,11 +58,12 @@ export function findAccessibleNines(
         [up, right, down, left].forEach((direction) => {
           const adjacent = map.get(coordToString(direction[0], direction[1]))!;
           if (adjacent && current.height === adjacent.height - 1) {
-            accessibleNines += adjacent.accessibleNines;
+            accessibleNines = new Set([
+              ...accessibleNines,
+              ...adjacent.accessibleNines,
+            ]);
           }
         });
-
-        console.log(accessibleNines);
 
         map.set(coordToString(x, y), { ...current, accessibleNines });
       }
@@ -71,7 +77,7 @@ export function solution(map: TrailMap, height: number, width: number): number {
     for (let y = 0; y < height; y++) {
       const current = map.get(coordToString(x, y))!;
       if (current.height === 0) {
-        score += current.accessibleNines;
+        score += current.accessibleNines.size;
       }
     }
   }

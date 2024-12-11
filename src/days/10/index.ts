@@ -1,5 +1,8 @@
-import { solution as part1Solution, parseInput as part1Parser } from "./part1";
-import { solution as part2Solution } from "./part2";
+import {
+  solution as part1Solution,
+  parseInput as part1Parser,
+  findAccessibleNines,
+} from "./part1";
 import fs from "fs";
 import path from "path";
 
@@ -8,10 +11,9 @@ const rawInput = fs.readFileSync(
   "utf8"
 );
 
-// 288 too high
-
 console.time("Part 1 Time");
 const p1Input = part1Parser(rawInput);
+findAccessibleNines(p1Input.map, p1Input.height, p1Input.width);
 const p1 = part1Solution(p1Input.map, p1Input.height, p1Input.width);
 console.timeEnd("Part 1 Time");
 console.log(`Part 1 Solution: ${p1}`);
