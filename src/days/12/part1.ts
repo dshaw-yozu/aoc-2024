@@ -23,59 +23,64 @@ export function parseInput(rawInput: string): ParsedInput {
   return { map, width: lines[0].length, height: lines.length };
 }
 
-export function findRegions({ map, height, width }: ParsedInput): number {
-  // scan over map
-  // if current square is the different to up or left square
-  //      create new region and add it
-  // else
-  //      add to region of neighbour
+export async function checkRegions(
+  input: ParsedInput,
+  x: number,
+  y: number,
+  regionId: number,
+  content: string
+) {
+  const { map } = input;
+
+  if (!map.has(coordToString(x, y))) {
+    // console.log("outside of grid");
+    return;
+  }
+
+  const current = map.get(coordToString(x, y))!;
+
+  if (current.content !== content) {
+    // console.log("not match");
+    return;
+  }
+
+  if (typeof current.region !== "undefined") {
+    // console.log("region defined");
+    return;
+  }
+
+  //   console.log("set current");
+  map.set(coordToString(x, y), { content, region: regionId });
+
+  //   console.log("check others");
+
+  const coords = [
+    [x, y - 1], // up
+    [x - 1, y], // left
+    [x + 1, y], // right
+    [x, y + 1], // down
+  ];
+
+  await Promise.all(
+    coords.map(async ([a, b]) => {
+      await checkRegions(input, a, b, regionId, content);
+    })
+  );
+}
+
+export async function findRegions(input: ParsedInput): Promise<number> {
+  const { map, height, width } = input;
 
   let regionId = 0;
 
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
-      const current = map.get(coordToString(x, y))!;
-      const up = map.get(coordToString(x, y - 1));
-      const left = map.get(coordToString(x - 1, y));
-      const right = map.get(coordToString(x + 1, y));
-      //   const upRight = map.get(coordToString(x + 1, y - 1));
-
-      if (up && up.content === current.content) {
-        // same region
-        map.set(coordToString(x, y), { ...current, region: up.region });
+      const { region, content } = map.get(coordToString(x, y))!;
+      if (typeof region === "number") {
         continue;
       }
 
-      if (left && left.content === current.content) {
-        // same region
-        map.set(coordToString(x, y), { ...current, region: left.region });
-        continue;
-      }
-
-      if (right && right.content === current.content) {
-        let foundRegionId = undefined;
-        // find if right is connected to row above
-        for (let r = x + 1; r < width; r++) {
-          const square = map.get(coordToString(r, y));
-          const squareUp = map.get(coordToString(r, y - 1));
-
-          if (square && square.content !== current.content) {
-            break;
-          }
-
-          if (squareUp && squareUp?.content === current.content) {
-            foundRegionId = squareUp.region;
-            break;
-          }
-        }
-
-        if (foundRegionId) {
-          map.set(coordToString(x, y), { ...current, region: foundRegionId });
-          continue;
-        }
-      }
-
-      map.set(coordToString(x, y), { ...current, region: regionId });
+      await checkRegions(input, x, y, regionId, content);
       regionId++;
     }
   }
@@ -111,11 +116,8 @@ export function calculateRegionSize(
   return { size, fences };
 }
 
-export function solution(input: ParsedInput) {
-  const regions = findRegions(input);
-
-  console.log(regions);
-  console.log(Array.from(input.map).map(([, { region }]) => region));
+export async function solution(input: ParsedInput) {
+  const regions = await findRegions(input);
 
   let price = 0;
 

@@ -44,9 +44,10 @@ CD`);
   });
 
   describe("findRegions", () => {
-    it("should return 5 regions for first example", () => {
+    it("should return 5 regions for first example", async () => {
       const input = parseInput(firstExample);
-      const regions = findRegions(input);
+      const regions = await findRegions(input);
+
       expect(input.map.get("0|0")).toStrictEqual({ content: "A", region: 0 });
       expect(input.map.get("1|0")).toStrictEqual({ content: "A", region: 0 });
       expect(input.map.get("3|1")).toStrictEqual({ content: "D", region: 3 });
@@ -57,9 +58,9 @@ CD`);
       expect(regions).toBe(5);
     });
 
-    it("should return 5 regions for second example", () => {
+    it("should return 5 regions for second example", async () => {
       const input = parseInput(secondExample);
-      const regions = findRegions(input);
+      const regions = await findRegions(input);
 
       expect(input.map.get("0|0")).toStrictEqual({ content: "O", region: 0 });
       expect(input.map.get("2|2")).toStrictEqual({ content: "O", region: 0 });
@@ -73,16 +74,30 @@ CD`);
       expect(regions).toBe(5);
     });
 
-    it("should return 11 regions for second example", () => {
+    it("should return 11 regions for second example", async () => {
       const input = parseInput(thirdExample);
-      const regions = findRegions(input);
+      const regions = await findRegions(input);
 
       expect(regions).toBe(11);
     });
 
-    it("should return 2 regions for rightHang example", () => {
+    it("should return 2 regions for rightHang example", async () => {
       const input = parseInput(simpleRightHangRegion);
-      const regions = findRegions(input);
+      const regions = await findRegions(input);
+
+      expect(regions).toBe(2);
+    });
+
+    it("should handle super simple example 1", async () => {
+      const input = parseInput("AA");
+      const regions = await findRegions(input);
+
+      expect(regions).toBe(1);
+    });
+
+    it("should handle super simple example 2", async () => {
+      const input = parseInput("AB");
+      const regions = await findRegions(input);
 
       expect(regions).toBe(2);
     });
@@ -90,15 +105,15 @@ CD`);
 
   describe("calculateRegionSize", () => {
     describe("example 1", () => {
-      const input = parseInput(firstExample);
-      findRegions(input);
       it.each([
         [0, 4, 10],
         [1, 4, 8],
         [2, 4, 10],
         [3, 1, 4],
         [4, 3, 8],
-      ])("region %i size %i fences %i", (id, size, fences) => {
+      ])("region %i size %i fences %i", async (id, size, fences) => {
+        const input = parseInput(firstExample);
+        await findRegions(input);
         expect(calculateRegionSize(input, id)).toStrictEqual({
           size,
           fences,
@@ -107,15 +122,15 @@ CD`);
     });
 
     describe("example 2", () => {
-      const input = parseInput(secondExample);
-      findRegions(input);
       it.each([
         [0, 21, 36],
         [1, 1, 4],
         [2, 1, 4],
         [3, 1, 4],
         [4, 1, 4],
-      ])("region %i size %i fences %i", (id, size, fences) => {
+      ])("region %i size %i fences %i", async (id, size, fences) => {
+        const input = parseInput(secondExample);
+        await findRegions(input);
         expect(calculateRegionSize(input, id)).toStrictEqual({
           size,
           fences,
@@ -124,8 +139,6 @@ CD`);
     });
 
     describe("example 3", () => {
-      const input = parseInput(thirdExample);
-      findRegions(input);
       it.each([
         [0, 12, 18],
         [1, 4, 8],
@@ -138,7 +151,9 @@ CD`);
         [8, 14, 22],
         [9, 5, 12],
         [10, 3, 8],
-      ])("region %i size %i fences %i", (id, size, fences) => {
+      ])("region %i size %i fences %i", async (id, size, fences) => {
+        const input = parseInput(thirdExample);
+        await findRegions(input);
         expect(calculateRegionSize(input, id)).toStrictEqual({
           size,
           fences,
@@ -148,20 +163,20 @@ CD`);
   });
 
   describe("solution", () => {
-    it("should find total price - firstExample", () => {
+    it("should find total price - firstExample", async () => {
       const input = parseInput(firstExample);
 
-      expect(solution(input)).toBe(140);
+      expect(await solution(input)).toBe(140);
     });
-    it("should find total price - secondExample", () => {
+    it("should find total price - secondExample", async () => {
       const input = parseInput(secondExample);
 
-      expect(solution(input)).toBe(772);
+      expect(await solution(input)).toBe(772);
     });
-    it("should find total price - thirdExample", () => {
+    it("should find total price - thirdExample", async () => {
       const input = parseInput(thirdExample);
 
-      expect(solution(input)).toBe(1930);
+      expect(await solution(input)).toBe(1930);
     });
   });
 });
