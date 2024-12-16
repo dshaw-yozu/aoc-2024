@@ -1,9 +1,9 @@
 export type Position = [number, number];
 export type Velocity = [number, number];
-type RobotConfig = [Position, Velocity];
+export type RobotConfig = [Position, Velocity];
 
-const WIDTH = 101;
-const HEIGHT = 103;
+export const WIDTH = 101;
+export const HEIGHT = 103;
 
 export function parseInput(rawText: string): RobotConfig[] {
   const lines = rawText.split("\n");
@@ -53,13 +53,11 @@ export function moveRobots(
   height = HEIGHT
 ): RobotConfig[] {
   let updatedRobots = [...robots];
-  console.log(width, height, updatedRobots[0][0]);
 
   for (let n = 0; n < steps; n++) {
     updatedRobots = updatedRobots.map((robot) =>
       moveRobot(robot, width, height)
     );
-    console.log(n, width, height, updatedRobots[0][0]);
   }
 
   return updatedRobots;
