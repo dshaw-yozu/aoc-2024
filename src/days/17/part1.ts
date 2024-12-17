@@ -1,7 +1,7 @@
-type RegistryMap = Map<"A" | "B" | "C", number>;
-type Program = number[];
+export type RegistryMap = Map<"A" | "B" | "C", number>;
+export type Program = number[];
 
-type ParsedInput = {
+export type ParsedInput = {
   registry: RegistryMap;
   program: Program;
 };
@@ -107,17 +107,21 @@ export function executeCommand(
   pointer: number
 ): [number, number | undefined] {
   const combo = getCombo(registry, operand);
+
   let output: number | undefined;
   let updatedPointer = pointer;
   let manualUpdate = false;
   switch (command) {
     case 0: // adv
+      if (combo === -1) return [Infinity, undefined];
       adv(registry, combo);
       break;
     case 1: // bxl
       bxl(registry, operand);
       break;
     case 2: // bst
+      if (combo === -1) return [Infinity, undefined];
+
       bst(registry, combo);
       break;
     case 3: // jnz
@@ -128,12 +132,18 @@ export function executeCommand(
       bxc(registry, operand);
       break;
     case 5: // out
+      if (combo === -1) return [Infinity, undefined];
+
       output = out(combo);
       break;
     case 6: // bdv
+      if (combo === -1) return [Infinity, undefined];
+
       bdv(registry, combo);
       break;
     case 7: // cdv
+      if (combo === -1) return [Infinity, undefined];
+
       cdv(registry, combo);
       break;
   }
@@ -159,6 +169,10 @@ export function solution(input: ParsedInput): string {
 
     if (typeof out === "number") {
       output.push(out);
+    }
+
+    if (i === -1) {
+      i = input.program.length;
     }
 
     i = updatedPointer;
