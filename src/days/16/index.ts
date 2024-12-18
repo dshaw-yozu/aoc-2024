@@ -1,4 +1,9 @@
-import { parseInput as part1Parser, findPath } from "./part1";
+import {
+  parseInput as part1Parser,
+  findPaths,
+  findShortestPath,
+  drawMap,
+} from "./part1";
 import fs from "fs";
 import path from "path";
 
@@ -10,9 +15,9 @@ const rawInput = fs.readFileSync(
 console.time("Part 1 Time");
 const p1Input = part1Parser(rawInput);
 
-const validMazePaths = findPath(p1Input);
-
-console.log(validMazePaths);
+findPaths(p1Input);
+const shortestPath = findShortestPath(p1Input);
+drawMap(p1Input.maze, p1Input.height, p1Input.width);
 console.timeEnd("Part 1 Time");
 console.log(`Part 1 Solution: ${0}`);
 
