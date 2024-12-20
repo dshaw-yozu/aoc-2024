@@ -112,88 +112,75 @@ export function getNeighbours(
     .filter((t) => t.content !== "#");
 }
 
-export function findPaths({ maze, start, width, height }: ParsedInput) {
-  const initialNeighbours = getNeighbours(maze, start);
+export function updateTile(
+  maze: MazeMap,
+  position: Position,
+  update: Partial<MazeTile>
+) {
+  const key = coordToString(...position);
+  const content = maze.get(key);
 
-  const unexploredJunctions: Position[] = initialNeighbours
-    .filter((n) => !n.visited)
-    .map((n) => n.position);
-
-  let currentPosition: Position = unexploredJunctions[0];
-  let distanceFromStart = 0;
-
-  function backToUnvisitedJunction() {
-    currentPosition = unexploredJunctions.pop()!;
-    distanceFromStart = maze.get(
-      coordToString(...currentPosition)
-    )!?.distanceFromStart;
-  }
-
-  while (unexploredJunctions.length > 0) {
-    const positionContent = maze.get(coordToString(...currentPosition))!;
-
-    maze.set(coordToString(...currentPosition), {
-      ...positionContent,
-      distanceFromStart: distanceFromStart,
-      visited: true,
-    });
-
-    if (positionContent.content === "E") {
-      console.log("Found Exit");
-      backToUnvisitedJunction();
-      continue;
-    }
-
-    const currentNeighbours = getNeighbours(maze, currentPosition);
-
-    const unvisitedNeighbours = currentNeighbours.filter((n) => !n.visited);
-
-    if (unvisitedNeighbours.length > 1) {
-      // allow backtrack to this point
-      unexploredJunctions.push(currentPosition);
-    }
-
-    if (unvisitedNeighbours.length === 0) {
-      // dead end, go back to previous junction;
-      backToUnvisitedJunction();
-    } else {
-      currentPosition = unvisitedNeighbours[0].position;
-      distanceFromStart++;
-    }
-  }
+  maze.set(key, { ...content, ...update } as MazeTile);
 }
 
-export function findShortestPath({ maze, end }: ParsedInput) {
-  const path: Position[] = [];
+export function dikstras({ maze, start, end }: ParsedInput) {
+  updateTile(maze, start, { distanceFromStart: 0 });
 
-  let distanceToEnd = maze.get(coordToString(...end))!?.distanceFromStart;
-  let currentPosition: Position = end;
+  const visitedTiles: string[] = [];
+  const revPath: Record<string, string> = {};
 
-  let n = distanceToEnd;
-  while (n > 0) {
-    const neighbours = getNeighbours(maze, currentPosition);
+  const walkableTiles = Array.from(maze.values()).filter(
+    (t) => t.content !== "#"
+  );
 
-    let lowestDistance = n;
-    let nextTile: MazeTile;
+  while (visitedTiles.length < walkableTiles.length) {
+    // find next unvisited with lowest distance
 
-    neighbours.forEach((neighbour) => {
-      if (neighbour.distanceFromStart < lowestDistance) {
-        lowestDistance = neighbour.distanceFromStart;
-        nextTile = neighbour;
+    let lowestUnvisitedDistance = Infinity;
+    let nextTile: MazeTile | undefined;
+
+    Array.from(maze.values()).forEach((t) => {
+      if (!t.visited && t.distanceFromStart < lowestUnvisitedDistance) {
+        lowestUnvisitedDistance = t.distanceFromStart;
+        nextTile = t;
       }
     });
 
-    path.push(nextTile!?.position);
+    if (nextTile) {
+      updateTile(maze, nextTile.position, { visited: true });
+      visitedTiles.push(coordToString(...nextTile.position));
 
-    currentPosition = nextTile!?.position;
+      const neighbours = getNeighbours(maze, nextTile.position);
 
-    maze.set(coordToString(...currentPosition), {
-      ...nextTile!,
-      onPath: true,
-    });
+      const neighbourDistance = nextTile.distanceFromStart + 1;
 
-    n = lowestDistance;
+      neighbours.forEach((n) => {
+        updateTile(maze, n.position, { distanceFromStart: neighbourDistance });
+
+        if (neighbourDistance < n.distanceFromStart) {
+          // new  shorter route;
+          revPath[coordToString(...n.position)] = coordToString(
+            ...nextTile!.position
+          );
+        }
+      });
+    }
   }
 
-  return path;
+  return revPath;
+}
+
+export function solution(input: ParsedInput) {
+  const revPath = dikstras(input);
+
+  let currentPathStep = coordToString(...input.end);
+
+  while (currentPathStep !== coordToString(...input.start)) {
+    const [x, y] = currentPathStep.split("|");
+
+    updateTile(input.maze, [+x, +y], { onPath: true });
+    currentPathStep = revPath[currentPathStep];
+  }
+
+  drawMap(input.maze, input.height, input.width);
 }
