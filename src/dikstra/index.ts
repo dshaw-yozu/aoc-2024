@@ -86,13 +86,24 @@ export function dikstras({
       });
 
       if (coordToString(nextTile.position) === coordToString(end)) {
-        console.log("end");
         foundEnd = true;
       }
     }
   }
 
-  return revPath;
+  let currentPathStep = coordToString(end);
+  let fwdPath: Position[] = [];
+
+  while (currentPathStep !== coordToString(start)) {
+    const [x, y] = currentPathStep.split("|");
+    updateTile(graph, [+x, +y], { onPath: true });
+    currentPathStep = revPath[currentPathStep];
+    fwdPath.push([+x, +y]);
+  }
+
+  fwdPath.push(start);
+
+  return fwdPath.reverse();
 }
 
 export function drawMap(map: GraphMap, height: number, width: number): string {

@@ -58,24 +58,13 @@ export function parseInput(rawText: string): ParsedInput {
 }
 
 export function solution(input: ParsedInput) {
-  const revPath = dikstras({
+  const path = dikstras({
     graph: input.maze,
     start: input.start,
     end: input.end,
   });
 
-  let currentPathStep = coordToString(input.end);
-  let actualPath = [currentPathStep];
-
-  while (currentPathStep !== coordToString(input.start)) {
-    const [x, y] = currentPathStep.split("|");
-
-    updateTile(input.maze, [+x, +y], { onPath: true });
-    currentPathStep = revPath[currentPathStep];
-    actualPath.push(currentPathStep);
-  }
-
   drawMap(input.maze, input.height, input.width);
 
-  return actualPath.length + 1;
+  return path.length + 1;
 }
