@@ -44,8 +44,10 @@ export function parseInput(rawText: string): ParsedInput {
   const lines = rawText.split("\n");
 
   for (let l = 0; l < 1024; l++) {
-    const [x, y] = lines[l].split(",");
-    map.delete(coordToString([+x, +y]));
+    if (lines[l]) {
+      const [x, y] = lines[l].split(",");
+      map.delete(coordToString([+x, +y]));
+    }
   }
 
   return {

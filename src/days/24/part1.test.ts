@@ -15,9 +15,9 @@ describe("part1", () => {
     it("should return gates and wires", () => {
       const result = parseInput(exampleInput);
       expect(result.gates).toStrictEqual([
-        { a: "x00", b: "y00", output: "z00", operator: "AND" },
-        { a: "x01", b: "y01", output: "z01", operator: "XOR" },
-        { a: "x02", b: "y02", output: "z02", operator: "OR" },
+        { a: "x00", b: "y00", output: "z00", operator: "AND", executed: false },
+        { a: "x01", b: "y01", output: "z01", operator: "XOR", executed: false },
+        { a: "x02", b: "y02", output: "z02", operator: "OR", executed: false },
       ]);
       expect(result.wires).toStrictEqual({
         x00: 1,

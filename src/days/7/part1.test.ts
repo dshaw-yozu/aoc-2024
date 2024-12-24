@@ -73,7 +73,7 @@ describe("day 7", () => {
 
   describe("createCalculation", () => {
     it("should return operation as a string", () => {
-      expect(createCalculation([1, 2], ["+"])).toBe("1+2");
+      expect(createCalculation([1, 2], ["+"])).toStrictEqual([1, "+", 2]);
     });
   });
 

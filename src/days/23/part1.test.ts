@@ -64,7 +64,7 @@ d-a`)
 
     it("should handle example input", () => {
       const result = findTripleConnections(parseInput(exampleInput));
-      expect(result).toBe([
+      expect(result).toStrictEqual([
         "kh,qp,ub",
         "tc,td,wh",
         "qp,td,wh",

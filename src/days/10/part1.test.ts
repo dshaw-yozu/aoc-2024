@@ -45,19 +45,16 @@ describe("day 10", () => {
       expect(width).toBe(7);
       expect(map.get("0|0")).toStrictEqual({
         height: NaN,
-        validInclines: 0,
-        accessibleNines: 0,
+        accessibleNines: new Set(),
       });
 
       expect(map.get("3|0")).toStrictEqual({
         height: 0,
-        validInclines: 0,
-        accessibleNines: 0,
+        accessibleNines: new Set(),
       });
       expect(map.get("0|6")).toStrictEqual({
         height: 9,
-        validInclines: 0,
-        accessibleNines: 0,
+        accessibleNines: new Set(["0|6"]),
       });
       expect(map.size).toBe(49);
     });
@@ -68,23 +65,18 @@ describe("day 10", () => {
       const { map, height, width } = parseInput(simpleInput);
       findAccessibleNines(map, height, width);
 
-      expect(map.get(coordToString(0, 5))?.accessibleNines).toBe(1);
-      expect(map.get(coordToString(0, 4))?.accessibleNines).toBe(1);
-      expect(map.get(coordToString(0, 3))?.accessibleNines).toBe(1);
-      expect(map.get(coordToString(1, 3))?.accessibleNines).toBe(1);
-      expect(map.get(coordToString(2, 3))?.accessibleNines).toBe(1);
-      expect(map.get(coordToString(3, 3))?.accessibleNines).toBe(2);
-      expect(map.get(coordToString(3, 2))?.accessibleNines).toBe(2);
-      expect(map.get(coordToString(3, 1))?.accessibleNines).toBe(2);
-      expect(map.get(coordToString(3, 0))?.accessibleNines).toBe(2);
+      expect(map.get(coordToString(0, 5))?.accessibleNines).toStrictEqual(
+        new Set(["0|6"])
+      );
     });
 
     it("should handle example input", () => {
       const { map, height, width } = parseInput(rawInput);
       findAccessibleNines(map, height, width);
 
-      expect(map.get(coordToString(2, 0))?.accessibleNines).toBe(5);
-      expect(map.get(coordToString(4, 0))?.accessibleNines).toBe(6);
+      expect(map.get(coordToString(2, 0))?.accessibleNines).toStrictEqual(
+        new Set(["4|5", "5|4", "4|3", "1|0", "0|3"])
+      );
     });
   });
 

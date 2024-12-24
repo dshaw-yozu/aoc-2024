@@ -1,4 +1,5 @@
-import { parseInput, drawMap } from "./part1";
+import { drawMap } from "../../dikstra/index";
+import { parseInput } from "./part1";
 
 describe("part1", () => {
   describe("parseInput", () => {
@@ -12,9 +13,8 @@ describe("part1", () => {
   describe("drawMap", () => {
     it("should handle simple example", () => {
       const output = parseInput(`#S.E#`);
-      expect(drawMap(output.maze, output.height, output.width)).toStrictEqual([
-        1, 0,
-      ]);
+      expect(drawMap(output.maze, output.height, output.width)).toBe(`█S E█
+`);
     });
   });
 });
